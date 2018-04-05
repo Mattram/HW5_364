@@ -71,7 +71,8 @@ class UpdateButtonForm(FlaskForm):
 # TODOdone 364: Define a form class for updating the priority of a todolist item
 #(HINT: What class activity you have done before is this similar to?)
 
-class UpdatePriorityForm(FlaskForm):
+class UpdateForm(FlaskForm):
+    newName = StringField("What is the new title of this item?")
     newPriority = FloatField("What is the new priority of this todolist item?", validators = [Required()])
     submit = SubmitField("Update")
 
@@ -137,7 +138,7 @@ def all_lists():
 # Provided - see below for additional TODO
 @app.route('/list/<ident>',methods=["GET","POST"])
 def one_list(ident):
-    form = UpdatePriorityForm()
+    form = UpdateForm()
     lst = TodoList.query.filter_by(id=ident).first()
     items = lst.items.all()
     return render_template('list_tpl.html',todolist=lst,items=items,form=form)
@@ -148,13 +149,15 @@ def one_list(ident):
 # TODOdone 364: Complete route to update an individual ToDo item's priority
 @app.route('/update/<item>',methods=["GET","POST"])
 def update(item):
-    form = UpdatePriorityForm()
+    form = UpdateForm()
     if form.validate_on_submit():
         new_priority = form.newPriority.data
+        new_name = form.newName.data
         n = TodoItem.query.filter_by(id = item).first()
         n.priority = new_priority
+        n.description = new_name
         db.session.commit()
-        flash("Updated priority of " + item)
+        flash("Updated " + item)
         return redirect(url_for('all_lists'))
     return render_template('update_item.html', item_name=item, form=form )
     # This code should use the form you created above for updating the specific item and manage the process of updating the item's priority.

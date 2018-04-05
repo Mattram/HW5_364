@@ -1,5 +1,6 @@
 <form method="POST" action="/update/{{ item_name }}">
 	{{ form.hidden_tag() }}
 	{{form.newPriority.label }} {{ form.newPriority() }}
+	{{form.newName.label }} {{ form.newName() }}
 	{{ form.submit() }}
 </form>
